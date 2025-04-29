@@ -19,8 +19,7 @@ sequelize.authenticate().then(()=>console.log('Connection has been established s
 const User = require('./model/user_model.js')(sequelize, DataTypes);
 
 const Address = require('./model/address_model.js')(sequelize, DataTypes);
-// const Address = require('Address')(sequelize, DataTypes);
-// const Address = require('./model/address_model.js')(sequelize, DataTypes);
+
 
 
 User.hasMany(Address, { foreignKey: 'user_id' });
