@@ -1,31 +1,32 @@
-const { Sequelize, DataTypes, Model } = require("sequelize");
+const sequelize = require('./database/db.js');
+const { DataTypes } = require("sequelize");
 const express = require("express");
 const app = express();
-const blogs = require("./blogs");
-const user_model = require("./model/user_model.js");
 const e = require("express");
-
 app.use(express.json());
 
-const sequelize = new Sequelize("postgres", "postgres", "123", {
-  host: "localhost",
-  port: 5431,
-  dialect:
-    "postgres" /* one of 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql' | 'db2' | 'snowflake' | 'oracle' */,
-});
-sequelize
-  .authenticate()
-  .then(() => console.log("Connection has been established successfully."))
-  .catch((error) => console.error("Unable to connect to the database:", error));
+
+
+
+
 
 const User = require("./model/user_model.js")(sequelize, DataTypes);
 
 const Address = require("./model/address_model.js")(sequelize, DataTypes);
-
+const Product = require("./model/product_model.js")(sequelize, DataTypes);
 User.hasMany(Address, { foreignKey: "user_id", as: "address" });
 Address.belongsTo(User, { foreignKey: "user_id" });
 
+// User has many products
+User.hasMany(Product, { foreignKey: "user_id", as: "products" });
+Product.belongsTo(User, { foreignKey: "user_id" });
 
+const router = require('./routes/product_routes.js');
+
+const cartRouter = require('./cart/route/cart_route.js');
+
+app.use(router);
+app.use(cartRouter);
 
 app.get(["/getUsers", "/getUsers/:id"], async (req, res) => {
   try {
@@ -50,7 +51,7 @@ app.get(["/getUsers", "/getUsers/:id"], async (req, res) => {
     });
   } catch (e) {
     console.error("Error executing query", e);
-    ``;
+
 
     res.status(500).json({
       message: "Internal Server Error",
@@ -220,3 +221,22 @@ app.post("/updatePost", async (req, res) => {
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
 });
+
+
+
+app.get('/products', async (req, res) => {
+  try {
+    const product = await Product.findAll();
+
+    return res.json({
+      success: true,
+      product: product,
+    })
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get products',
+      error: e.message
+    })
+  }
+})
