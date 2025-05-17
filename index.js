@@ -5,15 +5,10 @@ const app = express();
 const e = require("express");
 app.use(express.json());
 
-
-
-
-
-
 const User = require("./model/user_model.js")(sequelize, DataTypes);
 
 const Address = require("./model/address_model.js")(sequelize, DataTypes);
-const Product = require("./model/product_model.js")(sequelize, DataTypes);
+const Product = require("./product/model/product_model.js")(sequelize, DataTypes);
 User.hasMany(Address, { foreignKey: "user_id", as: "address" });
 Address.belongsTo(User, { foreignKey: "user_id" });
 
@@ -21,7 +16,7 @@ Address.belongsTo(User, { foreignKey: "user_id" });
 User.hasMany(Product, { foreignKey: "user_id", as: "products" });
 Product.belongsTo(User, { foreignKey: "user_id" });
 
-const router = require('./routes/product_routes.js');
+const router = require('./product/routes/product_routes.js');
 
 const cartRouter = require('./cart/route/cart_route.js');
 

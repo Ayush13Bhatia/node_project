@@ -3,7 +3,7 @@ const sequelize = require('../../database/db.js');
 
 const Cart = require('../model/cart_model.js')(sequelize, DataTypes);
 const User = require('../../model/user_model.js')(sequelize, DataTypes);
-const Product = require('../../model/product_model.js')(sequelize, DataTypes);
+const Product = require('../../product/model/product_model.js')(sequelize, DataTypes);
 
 
 // Cart.belongsTo(User, { foreignKey: "user_id", as: "user" }); // Needed for Cart -> User include
